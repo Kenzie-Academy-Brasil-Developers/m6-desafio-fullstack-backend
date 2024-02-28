@@ -38,19 +38,17 @@ export class RecoverPasswordService {
     });
 
     try {
+      const resetPassword = resetPasswordRepository.create({
+        token,
+        user: foundUser,
+      });
+      await resetPasswordRepository.save(resetPassword);
       const info = await transporter.sendMail({
         from: process.env.EMAIL_USER,
         to: email,
         subject: "Recuperação de Senha",
         html: `<p>Clique no link abaixo para recuperar sua senha:</p><p><a href="http://localhost:5173/password/${token}">Recuperar Senha</a></p>`,
       });
-      const resetPassword = resetPasswordRepository.create({
-        token,
-        user: foundUser,
-      });
-      await resetPasswordRepository.save(resetPassword);
-      
-      console.log(token)
   
     } catch (error: any) {
       console.error("Erro ao enviar e-mail de recuperação de senha:", error);
@@ -70,7 +68,6 @@ export class RecoverPasswordService {
         user: true ,
       }
     });
-    console.log(foundResetPassword)
     if(foundResetPassword == null){
       throw new AppError("Contact not found", 404);
     }
