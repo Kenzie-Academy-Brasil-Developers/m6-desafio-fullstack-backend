@@ -11,7 +11,7 @@ const userSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date().nullable(),
   updatedBy: z.string().nullable(),
-  contacts: z.array(contactSchema)
+  contacts: z.array(contactSchema),
 });
 
 const userSchemaRequest = userSchema.omit({
@@ -20,7 +20,7 @@ const userSchemaRequest = userSchema.omit({
   registeredAt: true,
   updatedAt: true,
   updatedBy: true,
-  contacts:true,
+  contacts: true,
 });
 
 const userSchemaResponse = userSchema.omit({
@@ -40,9 +40,23 @@ const userSchemaUpdate = userSchema
   })
   .partial();
 
-  const userSchemaUpdateResponse = userSchema.omit({
-      contacts: true,
-    })
+const userSchemaUpdateResponse = userSchema.omit({
+  contacts: true,
+});
+
+const userSchemaSignInResponse = userSchema.pick({
+  id: true,
+  email: true,
+  name: true,
+  phone: true,
+  password: true,
+  superUser: true,
+});
+
+const signInSchemaResponse =z.object({
+  user: userSchemaSignInResponse,
+  token: z.string()
+})
 
 export {
   userSchema,
@@ -50,5 +64,7 @@ export {
   userSchemaResponse,
   usersSchemaResponse,
   userSchemaUpdate,
-  userSchemaUpdateResponse
+  userSchemaUpdateResponse,
+  signInSchemaResponse,
+  userSchemaSignInResponse
 };

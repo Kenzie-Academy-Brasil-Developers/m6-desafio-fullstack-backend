@@ -33,7 +33,6 @@ export class ContactController {
       contactId,
       tokenId
     );
-    console.log(updatedContact);
     return res.json(updatedContact);
   }
 

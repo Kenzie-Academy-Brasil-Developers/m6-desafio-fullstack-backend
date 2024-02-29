@@ -54,6 +54,6 @@ export class Contact {
   @Column({ nullable: true, type: "varchar" })
   updatedBy: string | null;
 
-  @ManyToOne(() => User, (user) => user.contacts)
+  @ManyToOne(() => User, (user) => user.contacts, {onDelete: "CASCADE"})
   user: User;
 }

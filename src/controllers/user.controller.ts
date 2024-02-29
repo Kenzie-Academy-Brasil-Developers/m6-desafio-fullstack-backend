@@ -41,8 +41,6 @@ export class UserController {
   async generatePdf(req: Request, res: Response) {
     const userId = res.locals.userId
     const superUser = res.locals.superUser
-    console.log(userId)
-    console.log(superUser)
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",

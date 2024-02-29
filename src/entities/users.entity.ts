@@ -41,6 +41,6 @@ export class User {
   @Column({ nullable: true , type: "varchar"})
   updatedBy: string | null;
 
-  @OneToMany(() => Contact, (contact) => contact.user)
+  @OneToMany(() => Contact, (contact) => contact.user, { cascade: true })
   contacts: Contact[];
 }
