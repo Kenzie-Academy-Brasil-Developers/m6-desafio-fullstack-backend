@@ -53,9 +53,14 @@ const userSchemaSignInResponse = userSchema.pick({
   superUser: true,
 });
 
-const signInSchemaResponse =z.object({
+const signInSchemaResponse = z.object({
   user: userSchemaSignInResponse,
   token: z.string()
+})
+
+const getUserByTokenResponse = userSchema.pick({
+  id: true,
+  name: true
 })
 
 export {
@@ -66,5 +71,6 @@ export {
   userSchemaUpdate,
   userSchemaUpdateResponse,
   signInSchemaResponse,
-  userSchemaSignInResponse
+  userSchemaSignInResponse,
+  getUserByTokenResponse
 };

@@ -16,8 +16,8 @@ export class UserController {
   }
 
   async listById(req: Request, res: Response) {
-    const users = await this.userService.listById(req.params.id);
-    return res.json(users);
+    const user = await this.userService.listById(req.params.id);
+    return res.json(user);
   }
 
   async update(req: Request, res: Response) {
@@ -58,5 +58,11 @@ export class UserController {
     );
     const users = await this.userService.getPdfById(req.params.id);
     return res.end(users, "binary");
+  }
+
+  async getUserByToken(req: Request, res: Response) {
+    const token =req.body.token
+    const user = await this.userService.getUserByToken(token);
+    return res.json(user);
   }
 }

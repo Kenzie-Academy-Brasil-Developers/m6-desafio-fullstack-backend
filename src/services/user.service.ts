@@ -2,18 +2,22 @@ import { hash } from "bcryptjs";
 import { AppDataSource } from "../data-source";
 import { User } from "../entities/users.entity";
 import {
+  TGetUserByTokenResponse,
   TUserRequest,
   TUserResponse,
   TUserUpdateRequest,
   TUserUpdateResponse,
 } from "../interfaces/user.interface";
 import {
+  getUserByTokenResponse,
   userSchemaResponse,
+  userSchemaSignInResponse,
   userSchemaUpdateResponse,
   usersSchemaResponse,
 } from "../schemas/user.schema";
 import { AppError } from "../errors/AppError";
 import jsPDF from "jspdf";
+import { JwtPayload, verify } from "jsonwebtoken";
 
 export class UserService {
   async create(data: TUserRequest): Promise<TUserResponse> {
@@ -66,7 +70,7 @@ export class UserService {
     return usersSchemaResponse.parse(users);
   }
 
-  async listById(userId: string): Promise<TUserResponse> {
+  async listById(userId: string): Promise<TGetUserByTokenResponse> {
     const userRepository = AppDataSource.getRepository(User);
     const userFound = await userRepository.findOne({
       where: { id: userId },
@@ -324,5 +328,22 @@ export class UserService {
     const pdf = new Blob([pdfBytes], { type: "application/pdf" });
 
     return await pdf.text();
+  }
+
+  async getUserByToken(token: string):Promise<TGetUserByTokenResponse> {
+    const decodedToken = verify(token, process.env.SECRET_KEY!) as JwtPayload;
+    const userId = decodedToken.id;
+    const userRepository = AppDataSource.getRepository(User);
+    const userFound = await userRepository.findOne({
+      where: { id: userId },
+      relations: {
+        contacts: true,
+      },
+    });
+    if (!userFound) {
+      throw new AppError("User not found", 404);
+    }
+    const user = getUserByTokenResponse.parse(userFound)
+    return user;
   }
 }

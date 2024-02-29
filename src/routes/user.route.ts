@@ -9,16 +9,17 @@ import { isSuperUserMiddleware } from "../middlewares/isSuperUser.middleware";
 
 export const userRouter = Router();
 
+userRouter.get("/profile", (req, res) =>
+  userController.getUserByToken(req, res)
+);
+
 userRouter.post(
   "",
   ensureDataIsValidMiddleware(userSchemaRequest),
   (req: Request, res: Response) => userController.create(req, res)
 );
-userRouter.get(
-  "/pdf/",
-  ensureAuthMiddleware,
-  getDataFromToken,
-  (req, res) => userController.generatePdf(req, res)
+userRouter.get("/pdf/", ensureAuthMiddleware, getDataFromToken, (req, res) =>
+  userController.generatePdf(req, res)
 );
 userRouter.get(
   "/pdf/:id",
