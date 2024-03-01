@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-
 import { AppError } from "../errors/AppError";
 import { JwtPayload, verify } from "jsonwebtoken";
 

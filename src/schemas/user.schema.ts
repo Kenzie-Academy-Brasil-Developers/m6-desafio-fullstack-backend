@@ -60,7 +60,9 @@ const signInSchemaResponse = z.object({
 
 const getUserByTokenResponse = userSchema.pick({
   id: true,
-  name: true
+  name: true,
+  email: true,
+  phone: true,
 })
 
 export {

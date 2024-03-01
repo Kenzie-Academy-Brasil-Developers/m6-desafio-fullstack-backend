@@ -218,10 +218,10 @@ export class UserService {
       });
       const pdfBytes = pdfDoc.output("arraybuffer");
       const pdf = new Blob([pdfBytes], { type: "application/pdf" });
-  
+
       return await pdf.text();
     } else {
-      const user: User | null= await userRepository.findOne({
+      const user: User | null = await userRepository.findOne({
         where: {
           id: userId,
         },
@@ -230,37 +230,37 @@ export class UserService {
         },
       });
       const pdfDoc = new jsPDF({ orientation: "p" });
-        let y = 20;
-        let count = 0;
-        user?.contacts.map((contact) => {
-          for (const [key, value] of Object.entries(contact)) {
-            if (count == 6) {
-              pdfDoc.addPage();
-              count = -1;
-              y = 20;
-            }
-            if (
-              key == "name" ||
-              key == "phone" ||
-              key == "optionalPhone" ||
-              key == "email" ||
-              key == "optionalEmail" ||
-              key == "status"
-            ) {
-              pdfDoc.text(`${key}: ${value}`, 10, y);
-              y += 5;
-              if (key == "status") {
-                y += 10;
-              }
+      let y = 20;
+      let count = 0;
+      user?.contacts.map((contact) => {
+        for (const [key, value] of Object.entries(contact)) {
+          if (count == 6) {
+            pdfDoc.addPage();
+            count = -1;
+            y = 20;
+          }
+          if (
+            key == "name" ||
+            key == "phone" ||
+            key == "optionalPhone" ||
+            key == "email" ||
+            key == "optionalEmail" ||
+            key == "status"
+          ) {
+            pdfDoc.text(`${key}: ${value}`, 10, y);
+            y += 5;
+            if (key == "status") {
+              y += 10;
             }
           }
-  
-          count += 1;
-        });
-        const pdfBytes = pdfDoc.output("arraybuffer");
-        const pdf = new Blob([pdfBytes], { type: "application/pdf" });
-    
-        return await pdf.text();
+        }
+
+        count += 1;
+      });
+      const pdfBytes = pdfDoc.output("arraybuffer");
+      const pdf = new Blob([pdfBytes], { type: "application/pdf" });
+
+      return await pdf.text();
     }
   }
 
@@ -330,7 +330,8 @@ export class UserService {
     return await pdf.text();
   }
 
-  async getUserByToken(token: string):Promise<TGetUserByTokenResponse> {
+  async getUserByToken(tokenHead: string): Promise<TGetUserByTokenResponse> {
+    const [_, token] = tokenHead!.split(" ");
     const decodedToken = verify(token, process.env.SECRET_KEY!) as JwtPayload;
     const userId = decodedToken.id;
     const userRepository = AppDataSource.getRepository(User);
@@ -343,7 +344,7 @@ export class UserService {
     if (!userFound) {
       throw new AppError("User not found", 404);
     }
-    const user = getUserByTokenResponse.parse(userFound)
+    const user = getUserByTokenResponse.parse(userFound);
     return user;
   }
 }

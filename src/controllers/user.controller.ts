@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/user.service";
 import { TUserUpdateRequest } from "../interfaces/user.interface";
+import { AppError } from "../errors/AppError";
 
 
 export class UserController {
@@ -61,7 +62,10 @@ export class UserController {
   }
 
   async getUserByToken(req: Request, res: Response) {
-    const token =req.body.token
+    const token = req.headers.authorization;
+    if (!token) {
+      throw new AppError("Missing Token", 401);
+    }
     const user = await this.userService.getUserByToken(token);
     return res.json(user);
   }
